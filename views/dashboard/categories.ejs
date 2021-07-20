@@ -1,6 +1,15 @@
 <% extend('../layout/dashboard-layout.ejs') %>
 
 <div class="main container-fluid my-4">
+  <% if (hasInfo) { %>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="alert alert-info" role="alert">
+        <%= messages %>
+      </div>
+    </div>
+  </div>
+  <% } %>
   <div class="row justify-content-center">
     <div class="col-md-6">
       <table class="table">
@@ -23,7 +32,10 @@
               />
             </td>
             <td class="align-middle">
-              <form method="POST" action="/dashboard/categories/delete/<%- categories[prop].id %>">
+              <form
+                method="POST"
+                action="/dashboard/categories/delete/<%- categories[prop].id %>"
+              >
                 <button type="submit" class="btn btn-outline-danger btn-sm">
                   刪除
                 </button>
