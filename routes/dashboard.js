@@ -18,7 +18,11 @@ router.get('/article', function (req, res, next) {
 
 // categories
 router.get('/categories', function (req, res, next) {
-  res.render('dashboard/categories', { title: 'Express' })
+  categoriesRef.once('value').then(function (snapshot) {
+    const categories = snapshot.val()
+    console.log('categories', categories)
+    res.render('dashboard/categories', { title: 'Express', categories })
+  })
 })
 router.post('/categories/create', function (req, res) {
   const data = req.body
