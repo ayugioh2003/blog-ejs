@@ -1,4 +1,5 @@
 <% extend('../layout/dashboard-layout.ejs') %>
+<% if(article === undefined) { var article = {}; } %>
 
 <div class="main container-fluid my-4">
   <form method="POST" class="row justify-content-center" action="/dashboard/article/create">
@@ -10,10 +11,12 @@
         class="form-control"
         name="title"
         placeholder="標題"
-        value=""
+        value="<%= article.title || '' %> "
       />
       <hr />
-      <textarea name="content" id="editor" class="form-control"> </textarea>
+      <textarea name="content" id="editor" class="form-control">
+        <%- article.content || '' %> 
+      </textarea>
       <script>
         CKEDITOR.replace('content')
       </script>
@@ -31,7 +34,8 @@
                 type="radio"
                 name="category"
                 required
-                value="-L2TajOWL1ycB_hwyiK-"
+                value="<%= prop %>"
+                <% if (prop === article.category) { %> checked <% } %>  
               />
               <%= categories[prop].name %> 
             </label>
@@ -44,21 +48,23 @@
         <h6 class="card-header">是否公開</h6>
         <div class="card-body">
           <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-            <label class="btn btn-outline-primary w-100">
+            <label class="btn btn-outline-primary w-100 <% if ('draft' === article.status) { %> active <% } %>">
               <input
                 type="radio"
                 name="status"
                 autocomplete="off"
                 value="draft"
+                <% if ('draft' === article.status) { %> checked <% } %>
               />
               草稿
             </label>
-            <label class="btn btn-outline-primary w-100">
+            <label class="btn btn-outline-primary w-100 <% if ('public' === article.status) { %> active <% } %>">
               <input
                 type="radio"
                 name="status"
                 autocomplete="off"
                 value="public"
+                <% if ('public' === article.status) { %> checked <% } %>
               />
               公開
             </label>

@@ -35,7 +35,24 @@ router.post('/article/create', function (req, res, next) {
   console.log('data', data)
 
   articleRef.set(data).then(function () {
-    res.redirect('/dashboard/article/create')
+    res.redirect(`/dashboard/article/${data.id}`)
+  })
+})
+router.get('/article/:id', async function (req, res, next) {
+  const id = req.params.id
+  const categoriesSnapshot = await categoriesRef.once('value')
+  const categories = categoriesSnapshot.val()
+
+  const articlesSnapshot = await articlesRef.child(id).once('value')
+  const article = articlesSnapshot.val()
+
+  console.log('categories', categories)
+  console.log('article', article)
+
+  res.render('dashboard/article', {
+    title: 'Express',
+    categories,
+    article
   })
 })
 
