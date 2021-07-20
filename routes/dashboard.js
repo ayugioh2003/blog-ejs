@@ -3,17 +3,40 @@ const router = express.Router()
 const firebaseAdminDb = require('../connections/firebase_admin')
 
 const categoriesRef = firebaseAdminDb.ref('categories')
-// categoriesRef.once('value', (snapshot) => {
-//   const categories = snapshot.val()
-//   console.log(categories)
-// })
+const articlesRef = firebaseAdminDb.ref('articles')
 
+// article
 router.get('/archives', function (req, res, next) {
   res.render('dashboard/archives', { title: 'Express' })
 })
 
 router.get('/article', function (req, res, next) {
   res.render('dashboard/article', { title: 'Express' })
+})
+router.get('/article/create', async function (req, res, next) {
+  const categoriesSnapshot = await categoriesRef.once('value')
+  const categories = categoriesSnapshot.val()
+  console.log('categories', categories)
+
+  res.render('dashboard/article', {
+    title: 'Express',
+    categories,
+  })
+})
+router.post('/article/create', function (req, res, next) {
+  console.log(req.body)
+  const data = req.body
+  const articleRef = articlesRef.push()
+  const key = articleRef.key
+  const updateTime = Math.floor(Date.now() / 1000)
+
+  data.id = key
+  data.update_time = updateTime
+  console.log('data', data)
+
+  articleRef.set(data).then(function () {
+    res.redirect('/dashboard/article/create')
+  })
 })
 
 // categories
@@ -32,22 +55,6 @@ router.get('/categories', function (req, res, next) {
     })
   })
 })
-
-// router.post('/categories/create', function (req, res) {
-//   const data = req.body
-//   console.log('categories create data', data)
-
-//   const categoryRef = categoriesRef.push()
-//   // console.log('categoryRef', categoryRef)
-
-//   const key = categoryRef.key
-//   data.id = key
-//   console.log('key', key)
-
-//   categoryRef.set(data).then(function () {
-//     res.redirect('/dashboard/categories')
-//   })
-// })
 
 router.post('/categories/create', async function (req, res) {
   const data = req.body
