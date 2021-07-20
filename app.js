@@ -3,15 +3,18 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
-var firebaseAdminDb = require('./connections/firebase_admin')
+// var firebaseAdminDb = require('./connections/firebase_admin')
+// var firebase = require('./connections/firebase_client')
 
-const ref = firebaseAdminDb.ref('any')
-ref.once('value', function (snapshot) {
-  console.log('any', snapshot.val())
-})
-ref.once('value').then(function (snapshot) {
-  console.log('any', snapshot.val())
-})
+// const ref = firebaseAdminDb.ref('any')
+// ref.once('value', function (snapshot) {
+//   console.log('any', snapshot.val())
+// })
+// ref.once('value').then(function (snapshot) {
+//   console.log('any', snapshot.val())
+// })
+
+// console.log('firebase', firebase)
 
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
