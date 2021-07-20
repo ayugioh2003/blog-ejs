@@ -19,11 +19,11 @@
               <input
                 type="text"
                 class="form-control form-control-sm"
-                value="<%- categories[prop].path %> "
+                value="<%- categories[prop].path %>"
               />
             </td>
             <td class="align-middle">
-              <form method="POST">
+              <form method="POST" action="/dashboard/categories/delete/<%- categories[prop].id %>">
                 <button type="submit" class="btn btn-outline-danger btn-sm">
                   刪除
                 </button>
