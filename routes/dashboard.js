@@ -1,15 +1,39 @@
 const express = require('express')
 const router = express.Router()
 const firebaseAdminDb = require('../connections/firebase_admin')
+const moment = require('moment')
+const stringtags = require('striptags')
 
 const categoriesRef = firebaseAdminDb.ref('categories')
 const articlesRef = firebaseAdminDb.ref('articles')
 
 // article
 router.get('/archives', function (req, res, next) {
-  res.render('dashboard/archives', { title: 'Express' })
-})
+  let categories = {}
+  const articles = []
+  categoriesRef
+    .once('value')
+    .then(function (snapshot) {
+      categories = snapshot.val()
+      return articlesRef.orderByChild('update_time').once('value')
+    })
+    .then(function (snapshot) {
+      snapshot.forEach(function (snapshotChild) {
+        const article = snapshotChild.val()
+        articles.push(article)
+      })
+      articles.reverse()
 
+      res.render('dashboard/archives', {
+        title: 'Express',
+        articles,
+        categories,
+        stringtags,
+        moment,
+      })
+    })
+})
+// article
 router.get('/article', function (req, res, next) {
   res.render('dashboard/article', { title: 'Express' })
 })
@@ -60,7 +84,7 @@ router.post('/article/update/:id', function (req, res, next) {
   const data = req.body
   const id = req.params.id
   const updateTime = Math.floor(Date.now() / 1000)
-  
+
   data.update_time = updateTime
   console.log('data', data)
 
