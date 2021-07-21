@@ -6,20 +6,8 @@ var logger = require('morgan')
 var session = require('express-session')
 var flash = require('connect-flash')
 
-// var firebaseAdminDb = require('./connections/firebase_admin')
-// var firebase = require('./connections/firebase_client')
-
-// const ref = firebaseAdminDb.ref('any')
-// ref.once('value', function (snapshot) {
-//   console.log('any', snapshot.val())
-// })
-// ref.once('value').then(function (snapshot) {
-//   console.log('any', snapshot.val())
-// })
-
-// console.log('firebase', firebase)
-
 var indexRouter = require('./routes/index')
+var authRouter = require('./routes/auth')
 var dashboardRouter = require('./routes/dashboard')
 
 var app = express()
@@ -47,8 +35,18 @@ app.use(
 )
 app.use(flash())
 
+const authCheck = function (req, res, next) {
+  console.log('middleware', req.session)
+  const adminUid = process.env.ADMIN_UID
+  if (req.session.uid === adminUid) {
+    return next()
+  }
+  return res.redirect('/auth/signin')
+}
+
 app.use('/', indexRouter)
-app.use('/dashboard', dashboardRouter)
+app.use('/auth', authRouter)
+app.use('/dashboard', authCheck, dashboardRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

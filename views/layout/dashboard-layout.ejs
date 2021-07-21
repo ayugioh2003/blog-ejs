@@ -55,15 +55,40 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="/dashboard/archives">文章管理 </a>
-          <a class="nav-item nav-link" href="/dashboard/categories">分類管理 </a>
+          <a class="nav-item nav-link active" href="/dashboard/archives"
+            >文章管理
+          </a>
+          <a class="nav-item nav-link" href="/dashboard/categories"
+            >分類管理
+          </a>
         </div>
       </div>
-      <a class="nav-link" href="#">登出</a>
+      <span class="loginfo d-flex align-items-center">
+        <!-- <a class="nav-link" href="/auth/signout">登出</a> -->
+      </span>
     </nav>
     <%- content %>
     <footer class="mt-5 py-3 bg-light text-secondary text-center">
       六角學院後台管理系統
     </footer>
   </body>
+  <script>
+    $(document).ready(function () {
+      $.ajax({
+        url: '/auth/userinfo',
+        method: 'get',
+      }).done(function (response) {
+        console.log(response)
+        const loginfoElement = document.querySelector('.loginfo')
+        if (response.role === 'admin') {
+          loginfoElement.innerHTML = `
+            <span class="text-white">${response.role}</span>
+            <a class="nav-link" href="/auth/signout">登出</a>
+          `
+        } else {
+          loginfoElement.innerHTML = '<a class="nav-link" href="/auth/signin">登入</a>'
+        }
+      })
+    })
+  </script>
 </html>
