@@ -55,6 +55,22 @@ router.get('/article/:id', async function (req, res, next) {
     article
   })
 })
+router.post('/article/update/:id', function (req, res, next) {
+  console.log(req.body)
+  const data = req.body
+  const id = req.params.id
+  const updateTime = Math.floor(Date.now() / 1000)
+  
+  data.update_time = updateTime
+  console.log('data', data)
+
+  articlesRef
+    .child(id)
+    .update(data)
+    .then(function () {
+      res.redirect(`/dashboard/article/${id}`)
+    })
+})
 
 // categories
 router.get('/categories', function (req, res, next) {

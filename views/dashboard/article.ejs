@@ -1,8 +1,10 @@
-<% extend('../layout/dashboard-layout.ejs') %>
-<% if(article === undefined) { var article = {}; } %>
+<% extend('../layout/dashboard-layout.ejs') %> <% if(article === undefined) {
+var article = {}; } %>
 
 <div class="main container-fluid my-4">
-  <form method="POST" class="row justify-content-center" action="/dashboard/article/create">
+  <form class="row justify-content-center" <% if (article.id) { %>
+    action="/dashboard/article/update/<%- article.id %>" <% } else { %>
+    actions="/dashboard/article/create" <% } %> method="POST">
     <div class="col-md-6">
       <label for="title">請輸入標題</label>
       <input
@@ -26,21 +28,15 @@
         <h6 class="card-header">分類</h6>
         <div class="card-body">
           <!--  -->
-          <% for (var prop in categories) { %> 
+          <% for (var prop in categories) { %>
           <div class="form-check">
             <label class="form-check-label">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="category"
-                required
-                value="<%= prop %>"
-                <% if (prop === article.category) { %> checked <% } %>  
-              />
-              <%= categories[prop].name %> 
+              <input class="form-check-input" type="radio" name="category"
+              required value="<%= prop %>" <% if (prop === article.category) {
+              %> checked <% } %> /> <%= categories[prop].name %>
             </label>
           </div>
-          <% } %> 
+          <% } %>
         </div>
       </div>
 
@@ -48,25 +44,18 @@
         <h6 class="card-header">是否公開</h6>
         <div class="card-body">
           <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-            <label class="btn btn-outline-primary w-100 <% if ('draft' === article.status) { %> active <% } %>">
-              <input
-                type="radio"
-                name="status"
-                autocomplete="off"
-                value="draft"
-                <% if ('draft' === article.status) { %> checked <% } %>
-              />
-              草稿
+            <label
+              class="btn btn-outline-primary w-100 <% if ('draft' === article.status) { %> active <% } %>"
+            >
+              <input type="radio" name="status" autocomplete="off" value="draft"
+              <% if ('draft' === article.status) { %> checked <% } %> /> 草稿
             </label>
-            <label class="btn btn-outline-primary w-100 <% if ('public' === article.status) { %> active <% } %>">
-              <input
-                type="radio"
-                name="status"
-                autocomplete="off"
-                value="public"
-                <% if ('public' === article.status) { %> checked <% } %>
-              />
-              公開
+            <label
+              class="btn btn-outline-primary w-100 <% if ('public' === article.status) { %> active <% } %>"
+            >
+              <input type="radio" name="status" autocomplete="off"
+              value="public" <% if ('public' === article.status) { %> checked <%
+              } %> /> 公開
             </label>
           </div>
         </div>
