@@ -11,6 +11,10 @@ const articlesRef = firebaseAdminDb.ref('articles')
 router.get('/archives', function (req, res, next) {
   let categories = {}
   const articles = []
+
+  const status = req.query.status || 'public'
+  console.log('status', status)
+
   categoriesRef
     .once('value')
     .then(function (snapshot) {
@@ -20,7 +24,9 @@ router.get('/archives', function (req, res, next) {
     .then(function (snapshot) {
       snapshot.forEach(function (snapshotChild) {
         const article = snapshotChild.val()
-        articles.push(article)
+        if ((status === article.status)) {
+          articles.push(article)
+        }
       })
       articles.reverse()
 
@@ -30,6 +36,7 @@ router.get('/archives', function (req, res, next) {
         categories,
         stringtags,
         moment,
+        status,
       })
     })
 })
@@ -76,7 +83,7 @@ router.get('/article/:id', async function (req, res, next) {
   res.render('dashboard/article', {
     title: 'Express',
     categories,
-    article
+    article,
   })
 })
 router.post('/article/update/:id', function (req, res, next) {

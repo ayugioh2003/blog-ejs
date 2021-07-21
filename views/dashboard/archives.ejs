@@ -4,26 +4,33 @@
   <div class="row justify-content-center">
     <div class="col-md-6">
       <div class="btn-group w-100">
-        <a href="#" class="btn btn-outline-secondary w-100 rounded-0 active"
+        <a
+          href="/dashboard/archives?status=public"
+          class="btn btn-outline-secondary w-100 rounded-0 <% if (status === 'public') { %> active <% } %>"
           >已發佈</a
         >
-        <a href="#" class="btn btn-outline-secondary w-100 rounded-0">草稿</a>
+        <a
+          href="/dashboard/archives?status=draft"
+          class="btn btn-outline-secondary w-100 rounded-0 <% if (status === 'draft') { %> active <% } %>"
+          >草稿</a
+        >
         <a href="/dashboard/article/create" class="btn btn-primary">新增文章</a>
       </div>
 
       <% for (var prop in articles) { %>
       <div class="card my-3">
         <h4 class="card-header">
-          <%= articles[prop].title %> 
+          <%= articles[prop].title %>
         </h4>
         <div class="card-body">
-          <%- stringtags(articles[prop].content).slice(0, 150) %> 
+          <%- stringtags(articles[prop].content).slice(0, 150) %>
           <div>
             <span class="fa fa-clock-o"></span>
-            <%= moment(articles[prop].update_time * 1000).format('YYYY/MM/DD') %> ,
+            <%= moment(articles[prop].update_time * 1000).format('YYYY/MM/DD')
+            %> ,
             <span class="fa fa-folder-open-o"></span>
             <span>
-              <%= categories[articles[prop].category].name %> 
+              <%= categories[articles[prop].category].name %>
             </span>
           </div>
         </div>
@@ -35,7 +42,11 @@
             data-title="補充課程：Sass 與 includePaths"
             >刪除</a
           >
-          <a href="/dashboard/article/<%- articles[prop].id %>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
+          <a
+            href="/dashboard/article/<%- articles[prop].id %>"
+            class="btn btn-outline-secondary w-100 rounded-0"
+            >編輯</a
+          >
 
           <a
             href="#"
