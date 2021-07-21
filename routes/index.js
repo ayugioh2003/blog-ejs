@@ -3,6 +3,7 @@ var router = express.Router()
 const firebaseAdminDb = require('../connections/firebase_admin')
 const moment = require('moment')
 const stringtags = require('striptags')
+const convertPagination = require('../modules/convertPagination')
 
 const categoriesRef = firebaseAdminDb.ref('categories')
 const articlesRef = firebaseAdminDb.ref('articles')
@@ -30,38 +31,14 @@ router.get('/', function (req, res, next) {
       articles.reverse()
 
       // 分頁
-      const totalResult = articles.length
-      const perpage = 3
-      const pageTotal = Math.ceil(totalResult / perpage)
-
-      if (currentPage > pageTotal) {
-        currentPage = pageTotal
-      }
-
-      const minItem = (currentPage - 1) * perpage + 1
-      const maxItem = currentPage * perpage
-
-      const data = []
-      articles.forEach(function (item, i) {
-        let itemNum = i + 1
-        if (itemNum >= minItem && itemNum <= maxItem) {
-          data.push(item)
-        }
-      })
-      const page = {
-        pageTotal,
-        currentPage,
-        hasPre: currentPage > 1,
-        hasNext: currentPage < pageTotal
-      }
-
-      console.log('page', page)
+      const data = convertPagination(articles, currentPage)
+      console.log('data', data)
       // 分頁邏輯結束
 
       res.render('index', {
         title: 'Express',
-        page,
-        articles: data,
+        page: data.page,
+        articles: data.data,
         categories,
         stringtags,
         moment,
