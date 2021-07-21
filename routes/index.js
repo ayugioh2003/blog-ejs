@@ -12,10 +12,7 @@ const articlesRef = firebaseAdminDb.ref('articles')
 router.get('/', function (req, res, next) {
   let categories = {}
   const articles = []
-  let currentPage = req.query.page || 1
-
-  // const status = req.query.status || 'public'
-  // console.log('status', status)
+  let currentPage = Number.parseInt(req.query.page) || 1
 
   categoriesRef
     .once('value')
