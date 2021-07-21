@@ -38,8 +38,8 @@
           <a
             href="#"
             class="btn btn-outline-danger rounded-0 deletePost"
-            data-id="-L1zrsyiWCAbMQ5x8Plk"
-            data-title="補充課程：Sass 與 includePaths"
+            data-id="<%- articles[prop].id %>"
+            data-title="<%- articles[prop].title %>"
             >刪除</a
           >
           <a
@@ -86,3 +86,24 @@
     </ul>
   </nav>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $('.deletePost').on('click', function (e) {
+      e.preventDefault()
+      var id = $(this).data('id')
+      var title = $(this).data('title')
+      console.log('title', title)
+
+      if (confirm('確認是否刪除' + title)) {
+        $.ajax({
+          url: '/dashboard/article/delete/' + id,
+          method: 'post',
+        }).done(function (response) {
+          console.log(response)
+          window.location = '/dashboard/archives'
+        })
+      }
+    })
+  })
+</script>

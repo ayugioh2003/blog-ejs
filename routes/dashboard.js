@@ -102,6 +102,13 @@ router.post('/article/update/:id', function (req, res, next) {
       res.redirect(`/dashboard/article/${id}`)
     })
 })
+router.post('/article/delete/:id', function (req, res) {
+  const id = req.params.id
+  articlesRef.child(id).remove()
+  req.flash('info', '文章已刪除')
+  res.send('文章已刪除')
+  res.end()
+})
 
 // categories
 router.get('/categories', function (req, res, next) {
