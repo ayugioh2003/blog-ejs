@@ -3,6 +3,7 @@ const router = express.Router()
 const firebaseAdminDb = require('../connections/firebase_admin')
 const moment = require('moment')
 const stringtags = require('striptags')
+const convertPagination = require('../modules/convertPagination')
 
 const categoriesRef = firebaseAdminDb.ref('categories')
 const articlesRef = firebaseAdminDb.ref('articles')
@@ -11,6 +12,7 @@ const articlesRef = firebaseAdminDb.ref('articles')
 router.get('/archives', function (req, res, next) {
   let categories = {}
   const articles = []
+  let currentPage = Number.parseInt(req.query.page) || 1
 
   const status = req.query.status || 'public'
   console.log('status', status)
@@ -30,9 +32,15 @@ router.get('/archives', function (req, res, next) {
       })
       articles.reverse()
 
+      // 分頁
+      const data = convertPagination(articles, currentPage)
+      console.log('data', data)
+      // 分頁
+
       res.render('dashboard/archives', {
         title: 'Express',
-        articles,
+        page: data.page,
+        articles: data.data,
         categories,
         stringtags,
         moment,
