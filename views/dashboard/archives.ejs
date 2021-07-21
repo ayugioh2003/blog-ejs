@@ -23,7 +23,7 @@
           <%= articles[prop].title %>
         </h4>
         <div class="card-body">
-          <%- stringtags(articles[prop].content).slice(0, 150) %>
+          <%- stringtags(articles[prop].content).slice(0, 150) %> ...
           <div>
             <span class="fa fa-clock-o"></span>
             <%= moment(articles[prop].update_time * 1000).format('YYYY/MM/DD')
@@ -49,7 +49,7 @@
           >
 
           <a
-            href="#"
+            href="/post/<%= articles[prop].id %>"
             target="_blank"
             class="btn btn-outline-secondary w-100 rounded-0"
             >預覽</a

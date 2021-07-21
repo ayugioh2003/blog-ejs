@@ -7,7 +7,7 @@ const stringtags = require('striptags')
 const categoriesRef = firebaseAdminDb.ref('categories')
 const articlesRef = firebaseAdminDb.ref('articles')
 
-// article
+// archives
 router.get('/archives', function (req, res, next) {
   let categories = {}
   const articles = []
@@ -40,6 +40,7 @@ router.get('/archives', function (req, res, next) {
       })
     })
 })
+
 // article
 router.get('/article', function (req, res, next) {
   res.render('dashboard/article', { title: 'Express' })
