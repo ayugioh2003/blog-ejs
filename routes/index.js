@@ -12,9 +12,10 @@ const articlesRef = firebaseAdminDb.ref('articles')
 router.get('/', function (req, res, next) {
   let categories = {}
   const articles = []
+  let currentPage = req.query.page || 1
 
-  const status = req.query.status || 'public'
-  console.log('status', status)
+  // const status = req.query.status || 'public'
+  // console.log('status', status)
 
   categoriesRef
     .once('value')
@@ -25,23 +26,54 @@ router.get('/', function (req, res, next) {
     .then(function (snapshot) {
       snapshot.forEach(function (snapshotChild) {
         const article = snapshotChild.val()
-        if ((status === article.status)) {
+        if (('public' === article.status)) {
           articles.push(article)
         }
       })
       articles.reverse()
 
+      // 分頁
+      const totalResult = articles.length
+      const perpage = 3
+      const pageTotal = Math.ceil(totalResult / perpage)
+
+      if (currentPage > pageTotal) {
+        currentPage = pageTotal
+      }
+
+      const minItem = (currentPage - 1) * perpage + 1
+      const maxItem = currentPage * perpage
+
+      const data = []
+      articles.forEach(function (item, i) {
+        let itemNum = i + 1
+        if (itemNum >= minItem && itemNum <= maxItem) {
+          data.push(item)
+        }
+      })
+      const page = {
+        pageTotal,
+        currentPage,
+        hasPre: currentPage > 1,
+        hasNext: currentPage < pageTotal
+      }
+
+      console.log('page', page)
+      // 分頁邏輯結束
+
       res.render('index', {
         title: 'Express',
-        articles,
+        page,
+        articles: data,
         categories,
         stringtags,
         moment,
-        status,
       })
     })
 })
 
+
+// post
 router.get('/post', function (req, res, next) {
   res.render('post', { title: 'Express' })
 })
