@@ -24,7 +24,7 @@ router.get('/', function (req, res, next) {
     .then(function (snapshot) {
       snapshot.forEach(function (snapshotChild) {
         const article = snapshotChild.val()
-        if (('public' === article.status)) {
+        if ('public' === article.status) {
           articles.push(article)
         }
       })
@@ -46,7 +46,6 @@ router.get('/', function (req, res, next) {
     })
 })
 
-
 // post
 router.get('/post', function (req, res, next) {
   res.render('post', { title: 'Express' })
@@ -62,15 +61,26 @@ router.get('/post/:id', async function (req, res, next) {
   console.log('categories', categories)
   console.log('article', article)
 
+  if (!article) {
+    const reqUrl = req.originalUrl
+    const isUrlFromDashboard =
+      reqUrl.indexOf('/dashboard') > -1 || reqUrl.indexOf('/auth') > -1
+    console.log('isUrlFromDashboard', isUrlFromDashboard)
+
+    return res.render('error', {
+      title: '找不到該文章',
+      isUrlFromDashboard,
+    })
+  }
+
   res.render('post', {
     title: 'Express',
     categories,
     article,
     moment,
-    stringtags
+    stringtags,
   })
 })
-
 
 // auth
 router.get('/signup', function (req, res, next) {

@@ -1,3 +1,26 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<% if (isUrlFromDashboard) { %> 
+  <% extend('./layout/dashboard-layout.ejs') %>
+<% } %> 
+<!--  -->
+<% if (!isUrlFromDashboard) { %> 
+  <% extend('./layout/layout.ejs') %>
+<% } %> 
+
+<div class="container">
+  <div class="hex-blog">
+    <div class="row justify-content-center">
+      <div class="col-md-9">
+        <h2><%- title %></h2>
+        
+        <% if (isUrlFromDashboard) { %> 
+          <div><a href="/dashboard">回到首頁</a></div>
+        <% } %> 
+          <!--  -->
+        <% if (!isUrlFromDashboard) { %> 
+          <div><a href="/">回到首頁</a></div>
+        <% } %> 
+        
+      </div>
+    </div>
+  </div>
+</div>

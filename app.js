@@ -50,7 +50,17 @@ app.use('/dashboard', authCheck, dashboardRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404))
+  const reqUrl = req.originalUrl
+  const isUrlFromDashboard = reqUrl.indexOf('/dashboard') > -1 || reqUrl.indexOf('/auth') > -1
+  console.log('isUrlFromDashboard', isUrlFromDashboard)
+
+  var err = new Error('Not Found')
+  err.status = 404
+  res.render('error', {
+    title: '您所查看的頁面不存在:(',
+    isUrlFromDashboard
+  })
+  // next(createError(404))
 })
 
 // error handler
