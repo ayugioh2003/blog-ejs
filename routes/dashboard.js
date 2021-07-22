@@ -26,7 +26,7 @@ router.get('/archives', function (req, res, next) {
     .then(function (snapshot) {
       snapshot.forEach(function (snapshotChild) {
         const article = snapshotChild.val()
-        if ((status === article.status)) {
+        if (status === article.status) {
           articles.push(article)
         }
       })
@@ -164,6 +164,42 @@ router.post('/categories/create', async function (req, res) {
       req.flash('info', '新增路徑成功')
       res.redirect('/dashboard/categories')
     })
+  }
+})
+
+router.post('/categories/update/:id', async function (req, res) {
+  const data = req.body
+  const id = req.params.id
+  const path = data.path
+  const name = data.name
+  console.log(`path: ${path}, name: ${name}, id: ${id}`)
+
+  const pathSnapshot = await categoriesRef
+    .orderByChild('path')
+    .equalTo(data.path)
+    .once('value')
+  const nameSnapshot = await categoriesRef
+    .orderByChild('name')
+    .equalTo(data.name)
+    .once('value')
+
+  console.log('pathSnapshot', pathSnapshot.val())
+  console.log('nameSnapshot', nameSnapshot.val())
+
+  if (pathSnapshot.val() !== null && Object.keys(pathSnapshot.val()).indexOf(id) === -1) {
+    req.flash('info', '已有相同路徑')
+    res.redirect('/dashboard/categories')
+  } else if (nameSnapshot.val() !== null && Object.keys(nameSnapshot.val()).indexOf(id) === -1) {
+    req.flash('info', '已有相同分類名稱')
+    res.redirect('/dashboard/categories')
+  } else {
+    categoriesRef
+      .child(id)
+      .update(data)
+      .then(function () {
+        req.flash('info', '更新路徑成功')
+        res.redirect(`/dashboard/categories`)
+      })
   }
 })
 
