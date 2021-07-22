@@ -21,6 +21,7 @@ const convertPagination = function (resource, currentPage) {
     }
   })
   const page = {
+    dataTotal: totalResult,
     pageTotal,
     currentPage,
     hasPre: currentPage > 1,
