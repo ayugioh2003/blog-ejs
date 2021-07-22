@@ -23,6 +23,9 @@
                 <%= categories[article.category].name %>
               </a>
             </div>
+            <div class="p-2">
+              閱讀次數：<%= article.read_count || 0 %>
+            </div>
           </div>
           <div>
             <%= stringtags(article.content).slice(0, 150) %> ...

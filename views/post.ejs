@@ -28,6 +28,9 @@
               <%= categories[article.category].name %>
             </a>
           </div>
+          <div class="p-2">
+            閱讀次數：<%= article.read_count || 0 %>
+          </div>
         </div>
         <article class="text-dark post mb-4">
           <%- article.content %>

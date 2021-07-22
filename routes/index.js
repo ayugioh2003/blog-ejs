@@ -55,11 +55,11 @@ router.get('/post/:id', async function (req, res, next) {
   const categoriesSnapshot = await categoriesRef.once('value')
   const categories = categoriesSnapshot.val()
 
-  const articlesSnapshot = await articlesRef.child(id).once('value')
-  const article = articlesSnapshot.val()
+  let articleSnapshot = await articlesRef.child(id).once('value')
+  let article = articleSnapshot.val()
 
   console.log('categories', categories)
-  console.log('article', article)
+  console.log('article landing in before', article)
 
   if (!article) {
     const reqUrl = req.originalUrl
@@ -71,7 +71,17 @@ router.get('/post/:id', async function (req, res, next) {
       title: '找不到該文章',
       isUrlFromDashboard,
     })
+  } else {
+    // 增加文章閱讀次數
+    const read_count = article.read_count || 0
+    articlesRef
+      .child(id)
+      .update({ read_count: read_count + 1 })
   }
+
+  articleSnapshot = await articlesRef.child(id).once('value')
+  article = articleSnapshot.val()
+  console.log('article read_count after', article.read_count)
 
   res.render('post', {
     title: 'Express',
