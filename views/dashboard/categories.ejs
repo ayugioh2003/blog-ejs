@@ -1,4 +1,7 @@
-<% extend('../layout/dashboard-layout.ejs') %>
+<% extend('../layout/dashboard-layout.ejs', {
+  moduleType: 'categoryModule'
+}) %>
+
 
 <div class="main container-fluid my-4">
   <% if (hasInfo) { %>

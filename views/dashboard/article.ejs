@@ -1,5 +1,9 @@
-<% extend('../layout/dashboard-layout.ejs') %> <% if(article === undefined) {
-var article = {}; } %>
+<% extend('../layout/dashboard-layout.ejs', {
+  moduleType: 'articleModule'
+}) %>
+
+<!--  -->
+<% if(article === undefined) { var article = {}; } %>
 
 <div class="main container-fluid my-4">
   <form class="row justify-content-center" <% if (article.id) { %>

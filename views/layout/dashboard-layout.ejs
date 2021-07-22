@@ -1,3 +1,5 @@
+<% if (!moduleType) { var moduleType = '' } %>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -55,11 +57,14 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="/dashboard/archives"
+          <a class="nav-item nav-link <% if (moduleType === 'articleModule') { %> active <% } %>" href="/dashboard/archives"
             >文章管理
           </a>
-          <a class="nav-item nav-link" href="/dashboard/categories"
+          <a class="nav-item nav-link <% if (moduleType === 'categoryModule') { %> active <% } %>" href="/dashboard/categories"
             >分類管理
+          </a>
+          <a class="nav-item nav-link <% if (moduleType === 'userModule') { %> active <% } %>" href="/dashboard/user"
+            >用戶管理
           </a>
         </div>
       </div>
