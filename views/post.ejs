@@ -4,7 +4,7 @@
   <div class="hex-blog">
     <nav class="breadcrumb pl-0">
       <a class="breadcrumb-item text-primary" href="/">Home</a>
-      <a class="breadcrumb-item text-primary" href="#">
+      <a class="breadcrumb-item text-primary" href="/category/<%= article.category %>">
         <%= categories[article.category].name %>
       </a>
       <span class="breadcrumb-item active">
@@ -24,7 +24,7 @@
           </div>
           <div class="p-2">
             <i class="fa fa-tag" aria-hidden="true"></i>
-            <a href="" class="text-info">
+            <a href="/category/<%= categories[article.category].id %>" class="text-info">
               <%= categories[article.category].name %>
             </a>
           </div>

@@ -92,6 +92,82 @@ router.get('/post/:id', async function (req, res, next) {
   })
 })
 
+// category
+router.get('/categories', function (req, res, next) {
+  let categories = {}
+  const articles = []
+  let currentPage = Number.parseInt(req.query.page) || 1
+
+  categoriesRef
+    .once('value')
+    .then(function (snapshot) {
+      categories = snapshot.val()
+      console.log('categories', categories)
+      return articlesRef.orderByChild('update_time').once('value')
+    })
+    .then(function (snapshot) {
+      snapshot.forEach(function (snapshotChild) {
+        const article = snapshotChild.val()
+        if ('public' === article.status) {
+          articles.push(article)
+        }
+      })
+      articles.reverse()
+
+      // 分頁
+      // const data = convertPagination(articles, currentPage)
+      // console.log('data', data)
+      // 分頁邏輯結束
+
+      res.render('categories', {
+        title: 'Express',
+        // page: data.page,
+        // articles: data.data,
+        articles,
+        categories,
+        stringtags,
+        moment,
+      })
+    })
+})
+router.get('/category/:id', function (req, res, next) {
+  let categories = {}
+  const articles = []
+  let currentPage = Number.parseInt(req.query.page) || 1
+
+  categoriesRef
+    .once('value')
+    .then(function (snapshot) {
+      categories = snapshot.val()
+      console.log('categories', categories)
+      return articlesRef.orderByChild('update_time').once('value')
+    })
+    .then(function (snapshot) {
+      snapshot.forEach(function (snapshotChild) {
+        const article = snapshotChild.val()
+        if ('public' === article.status && article.category === req.params.id) {
+          articles.push(article)
+        }
+      })
+      articles.reverse()
+
+      // 分頁
+      const data = convertPagination(articles, currentPage)
+      console.log('data', data)
+      // 分頁邏輯結束
+
+      res.render('category', {
+        title: 'Express',
+        page: data.page,
+        articles: data.data,
+        category: req.params.id,
+        categories,
+        stringtags,
+        moment,
+      })
+    })
+})
+
 // auth
 router.get('/signup', function (req, res, next) {
   res.render('dashboard/signup', { title: 'Express' })

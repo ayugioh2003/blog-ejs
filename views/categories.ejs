@@ -1,0 +1,26 @@
+<% extend('./layout/layout', {
+  moduleType: 'categoryModule'
+}) %>
+
+<div class="container">
+  <div class="row my-4 justify-content-center">
+    <div class="col-md-9">
+      <h2>分類總表</h2>
+      <ul>
+        <% for (var prop in categories) { %>
+        <li>
+          <a href="/category/<%= categories[prop].id %>">
+            <%= categories[prop].name %>
+          </a>
+          <span> | </span>
+          <%= 
+            articles.filter((article) => article.category ===
+          categories[prop].id).length 
+          %>
+          <span>筆</span>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</div>
