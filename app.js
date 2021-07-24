@@ -35,31 +35,42 @@ app.use(
 )
 app.use(flash())
 
-const authCheck = function (req, res, next) {
+const authCheck = async function (req, res, next) {
   console.log('middleware', req.session)
-  const adminUid = process.env.ADMIN_UID
-  if (req.session.uid === adminUid) {
+
+  const whiteRoles = ['admin', 'editor']
+  const isLogable = whiteRoles.indexOf(req.session.role) !== -1
+  console.log('isLogable', isLogable)
+
+  if (isLogable) {
     return next()
   }
+
+  // const adminUid = process.env.ADMIN_UID
+  // if (req.session.uid === adminUid) {
+  //   return next()
+  // }
+
   return res.redirect('/auth/signin')
 }
 
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
-app.use('/dashboard', dashboardRouter)
+app.use('/dashboard', authCheck, dashboardRouter)
 // app.use('/dashboard', authCheck, dashboardRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   const reqUrl = req.originalUrl
-  const isUrlFromDashboard = reqUrl.indexOf('/dashboard') > -1 || reqUrl.indexOf('/auth') > -1
+  const isUrlFromDashboard =
+    reqUrl.indexOf('/dashboard') > -1 || reqUrl.indexOf('/auth') > -1
   console.log('isUrlFromDashboard', isUrlFromDashboard)
 
   var err = new Error('Not Found')
   err.status = 404
   res.render('error', {
     title: '您所查看的頁面不存在:(',
-    isUrlFromDashboard
+    isUrlFromDashboard,
   })
   // next(createError(404))
 })

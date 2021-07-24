@@ -5,6 +5,7 @@ const fireAuth = firebase.auth()
 
 const firebaseAdminDb = require('../connections/firebase_admin').database()
 const usersRef = firebaseAdminDb.ref('users')
+const rolesRef = firebaseAdminDb.ref('roles')
 // const categoriesRef = firebaseAdminDb.ref('categories')
 // const articlesRef = firebaseAdminDb.ref('articles')
 
@@ -39,7 +40,7 @@ router.post('/signup', function (req, res) {
         }
         console.log('data', userInfo)
 
-        usersRef.child(userCredential.user.uid).set(userInfo)   
+        usersRef.child(userCredential.user.uid).set(userInfo)
 
         res.redirect('/auth/signin')
       })
@@ -60,17 +61,43 @@ router.get('/signin', function (req, res, next) {
     hasErrors: messages.length > 0,
   })
 })
-router.post('/signin', function (req, res) {
+router.post('/signin', async function (req, res) {
   console.log('req.body', req.body)
   var email = req.body.email
   var password = req.body.password
   console.log(email, password)
+
+  // role
+  const rolesRef = firebaseAdminDb.ref('roles')
+  const rolesSnapshot = await rolesRef.once('value')
+  const roles = rolesSnapshot.val()
+
+  const usersRef = firebaseAdminDb.ref('users')
+  const usersSnapshot = await usersRef.once('value')
+  const users = usersSnapshot.val()
+
+  console.log('roles', roles)
+  console.log('users', users)
+  console.log('uid', req.session.uid)
+  //
 
   fireAuth
     .signInWithEmailAndPassword(email, password)
     .then(function (userCredential) {
       req.session.uid = userCredential.user.uid
       req.session.email = userCredential.user.email
+
+      // role
+      const currentUserRoleId = users[req.session.uid].role
+      const currentUserRole = roles[currentUserRoleId]
+      console.log('currentUserRole', currentUserRole)
+
+      // const whiteRoles = ['admin', 'editor']
+      // const isLogable = whiteRoles.indexOf(currentUserRole.name) !== -1
+      // console.log('isLogable', isLogable)
+      req.session.role = currentUserRole.name
+      // 
+
       console.log('session.uid', req.session.uid)
       res.redirect('/dashboard/archives')
     })
@@ -98,15 +125,15 @@ router.get('/userInfo', (req, res) => {
   //   guest: '訪客',
   // }
 
-  let role = 'guest'
-  if (req.session.uid === process.env.ADMIN_UID) {
-    role = 'admin'
-  }
+  // let role = 'guest'
+  // if (req.session.uid === process.env.ADMIN_UID) {
+  //   role = 'admin'
+  // }
 
   res.json({
     uid: req.session.uid,
     email: req.session.email,
-    role,
+    role: req.session.role || guest,
   })
 })
 
