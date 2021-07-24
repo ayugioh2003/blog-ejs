@@ -12,39 +12,62 @@
   <% } %>
   <!--  -->
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-10">
       <table class="table" id="categoriesTable">
         <thead>
           <tr>
+            <th>信箱</th>
             <th>名稱</th>
-            <th>路徑</th>
+            <th>備註</th>
+            <th>角色</th>
             <th width="110"></th>
             <th width="30"></th>
           </tr>
         </thead>
         <tbody>
-          <% for (var prop in categories) { %>
-          <tr class="disabled" data-id="<%= categories[prop].id %>">
+          <% for (var prop in users) { %>
+          <tr class="disabled" data-id="<%= users[prop].uid %>">
             <td class="align-middle">
               <input
                 type="text"
                 class="form-control form-control-sm"
-                name="name"
-                value="<%- categories[prop].name %>"
+                name="email"
+                value="<%- users[prop].email %>"
+                disabled
+              />
+            </td>
+            <td class="align-middle">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                name="display_name"
+                value="<%- users[prop].display_name %>"
               />
             </td>
             <td>
               <input
                 type="text"
                 class="form-control form-control-sm"
-                name="path"
-                value="<%- categories[prop].path %>"
+                name="note"
+                value="<%- users[prop].note %>"
               />
+            </td>
+            <td class="align-middle">
+              <select name="role" id="role">
+                <option value=""> -- 請選擇-- </option>
+                <% for (var role of Object.values(roles)) { %>
+                  <option 
+                    value="<%= role.id %>" <% if (users[prop].role === role.id) { %>selected<% } %>
+                  >
+                    <%= role.name %>
+                  </option>
+                <% } %> 
+              </select>
             </td>
             <td class="align-middle">
               <form
                 method="POST"
-                action="/dashboard/categories/update/<%- categories[prop].id %>"
+                action="/dashboard/users/update/<%- users[prop].uid %>"
               >
                 <button type="submit" class="btn btn-primary btn-sm btn-update">
                   更新
@@ -58,22 +81,29 @@
                   hidden
                   type="text"
                   class="form-control form-control-sm"
-                  name="path"
-                  value="<%- categories[prop].path %>"
+                  name="display_name"
+                  value="<%- users[prop].display_name %>"
                 />
                 <input
                   hidden
                   type="text"
                   class="form-control form-control-sm"
-                  name="name"
-                  value="<%- categories[prop].name %>"
+                  name="note"
+                  value="<%- users[prop].note %>"
                 />
+                <input
+                  hidden
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="role"
+                  value="<%- users[prop].role %>"
+                >
               </form>
             </td>
             <td class="align-middle">
               <form
                 method="POST"
-                action="/dashboard/categories/delete/<%- categories[prop].id %>"
+                action="/dashboard/users/delete/<%- users[prop].uid %>"
               >
                 <button type="submit" class="btn btn-outline-danger btn-sm">
                   刪除
@@ -85,7 +115,7 @@
         </tbody>
       </table>
 
-      <form method="POST" action="/dashboard/categories/create">
+      <!-- <form method="POST" action="/dashboard/categories/create">
         <table class="table">
           <tr>
             <td class="align-middle">新增</td>
@@ -114,7 +144,7 @@
         <div class="text-right">
           <button type="submit" class="btn btn-primary">新增資訊</button>
         </div>
-      </form>
+      </form> -->
     </div>
   </div>
 </div>
@@ -122,7 +152,9 @@
 <style>
   /* input 無法編輯 */
   /* https://stackoverflow.com/questions/11180177/can-one-disable-an-input-field-by-pure-css */
-  tr.disabled input {
+  tr.disabled input,
+  tr.disabled textarea,
+  tr.disabled select {
     pointer-events: none;
     border: 1px solid grey;
     background-color: lightgrey;
@@ -153,16 +185,19 @@
       const tr = e.target.parentNode.parentNode.parentNode
       console.log('id', tr.dataset.id)
 
+
       // 從反灰色變白色
       if (tr.classList.contains('disabled')) {
-        tr.dataset.name = tr.querySelector('input[name="name"]').value
-        tr.dataset.path = tr.querySelector('input[name="path"]').value
+        tr.dataset.display_name = tr.querySelector('input[name="display_name"]').value
+        tr.dataset.note = tr.querySelector('input[name="note"]').value
+        tr.dataset.role = tr.querySelector('select[name="role"]').value
         // e.target.textContent = '取消'
       }
       // 從白色變反灰
       if (!tr.classList.contains('disabled')) {
-        tr.querySelector('input[name="name"]').value = tr.dataset.name
-        tr.querySelector('input[name="path"]').value = tr.dataset.path
+        tr.querySelector('input[name="display_name"]').value = tr.dataset.display_name
+        tr.querySelector('input[name="note"]').value = tr.dataset.note
+        tr.querySelector('select[name="role"]').value = tr.dataset.role
         // e.target.textContent = '編輯'
       }
       tr.classList.toggle('disabled')
@@ -170,19 +205,28 @@
 
     // 更新
     if (e.target.classList.contains('btn-update')) {
+      // e.preventDefault()
       const tr = e.target.parentNode.parentNode.parentNode
       const td = e.target.parentNode.parentNode
       console.log('id', tr.dataset.id)
 
       tr.classList.toggle('disabled')
-      const name = tr.querySelector('input[name="name"]').value
-      const path = tr.querySelector('input[name="path"]').value
+      const display_name = tr.querySelector('input[name="display_name"]').value
+      const note = tr.querySelector('input[name="note"]').value
+      const role = tr.querySelector('select[name="role"]').value
       const id = tr.dataset.id
 
-      const nameInput = td.querySelector('input[name="name"]')
-      const pathInput = td.querySelector('input[name="path"]')
-      nameInput.value = name
-      pathInput.value = path
+      const display_nameInput = td.querySelector('input[name="display_name"]')
+      const noteInput = td.querySelector('input[name="note"]')
+      const roleInput = td.querySelector('input[name="role"]')
+      console.log(display_nameInput)
+
+      display_nameInput.value = display_name
+      noteInput.value = note
+      roleInput.value = role
+
+      console.log('name input', tr.querySelector('input[name="display_name"]'))
+      console.log('display_nameInput', display_nameInput)
 
       // const action = tr.classList.contains('disabled') ? 'delete' : 'update'
       //   const action = 'update'

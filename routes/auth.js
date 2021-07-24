@@ -3,7 +3,8 @@ const router = express.Router()
 const firebase = require('../connections/firebase_client')
 const fireAuth = firebase.auth()
 
-// const firebaseAdminDb = require('../connections/firebase_admin')
+const firebaseAdminDb = require('../connections/firebase_admin').database()
+const usersRef = firebaseAdminDb.ref('users')
 // const categoriesRef = firebaseAdminDb.ref('categories')
 // const articlesRef = firebaseAdminDb.ref('articles')
 
@@ -28,7 +29,18 @@ router.post('/signup', function (req, res) {
     fireAuth
       .createUserWithEmailAndPassword(email, password)
       .then(function (userCredential) {
-        console.log('userCredential', userCredential)
+        // console.log('userCredential', userCredential)
+
+        const userInfo = {
+          email: userCredential.user.email,
+          uid: userCredential.user.uid,
+          role: '',
+          display_name: userCredential.user.email.split('@')[0],
+        }
+        console.log('data', userInfo)
+
+        usersRef.child(userCredential.user.uid).set(userInfo)   
+
         res.redirect('/auth/signin')
       })
       .catch(function (error) {
@@ -89,7 +101,7 @@ router.get('/userInfo', (req, res) => {
   let role = 'guest'
   if (req.session.uid === process.env.ADMIN_UID) {
     role = 'admin'
-  } 
+  }
 
   res.json({
     uid: req.session.uid,

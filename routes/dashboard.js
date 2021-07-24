@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const firebaseAdminDb = require('../connections/firebase_admin')
+const firebaseAdmin = require('../connections/firebase_admin')
+const firebaseAdminDb = require('../connections/firebase_admin').database()
 const moment = require('moment')
 const stringtags = require('striptags')
 const convertPagination = require('../modules/convertPagination')
@@ -216,19 +217,29 @@ router.post('/categories/delete/:id', function (req, res) {
 })
 
 
-// users (待處理)
+// user
 router.get('/users', async function (req, res, next) {
   const messages = req.flash('info')
   console.log('messages', messages)
 
-  categoriesRef.once('value').then(function (snapshot) {
-    const categories = snapshot.val()
+  // firebase 提供的查詢方法
+  // const users = await firebaseAdmin.auth().listUsers()
+  // console.log('users', users)
+
+  const rolesSnapshot = await rolesRef.once('value')
+  const roles = rolesSnapshot.val()
+  // console.log('roles', roles)
+
+  usersRef.once('value').then(function (snapshot) {
+    const users = snapshot.val()
+    // console.log('users', users)
     // console.log('categories', categories)
     res.render('dashboard/users', {
       title: 'Express',
       messages,
       hasInfo: messages?.length > 0,
-      categories,
+      users,
+      roles
     })
   })
 })
@@ -264,26 +275,20 @@ router.post('/users/create', async function (req, res) {
   }
 })
 
-router.post('/uesrs/update/:id', async function (req, res) {
+router.post('/users/update/:id', async function (req, res) {
   const data = req.body
   const id = req.params.id
-  const role = data.role
-  const name = data.name
-  console.log(`path: ${path}, name: ${name}, id: ${id}`)
+  // const display_name = data.display_name
+  // const note = data.note
+  console.log('data', data)
 
-  const pathSnapshot = await categoriesRef
-    .orderByChild('role')
-    .equalTo(data.role)
+  const display_nameSnapshot = await usersRef
+    .orderByChild('display_name')
+    .equalTo(data.display_name)
     .once('value')
-  const nameSnapshot = await categoriesRef
-    .orderByChild('name')
-    .equalTo(data.name)
-    .once('value')
+  console.log('display_nameSnapshot', display_nameSnapshot.val())
 
-  console.log('roleSnapshot', roleSnapshot.val())
-  console.log('nameSnapshot', nameSnapshot.val())
-
-  if (nameSnapshot.val() !== null && Object.keys(nameSnapshot.val()).indexOf(id) === -1) {
+  if (display_nameSnapshot.val() !== null && Object.keys(display_nameSnapshot.val()).indexOf(id) === -1) {
     req.flash('info', '已有相同名稱')
     res.redirect('/dashboard/users')
   } else {

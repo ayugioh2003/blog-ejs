@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-const firebaseAdminDb = require('../connections/firebase_admin')
+const firebaseAdminDb = require('../connections/firebase_admin').database()
 const moment = require('moment')
 const stringtags = require('striptags')
 const convertPagination = require('../modules/convertPagination')
