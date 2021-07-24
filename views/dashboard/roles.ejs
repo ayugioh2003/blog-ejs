@@ -1,0 +1,189 @@
+<% extend('../layout/dashboard-layout.ejs', { moduleType: 'roleModule' }) %>
+
+<div class="main container-fluid my-4">
+  <% if (hasInfo) { %>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="alert alert-info" role="alert">
+        <%= messages %>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <!--  -->
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <table class="table" id="categoriesTable">
+        <thead>
+          <tr>
+            <th>名稱</th>
+            <th>註解</th>
+            <th width="110"></th>
+            <th width="30"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var prop in roles) { %>
+          <tr class="disabled" data-id="<%= roles[prop].id %>">
+            <td class="align-middle">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                name="name"
+                value="<%- roles[prop].name %>"
+              />
+            </td>
+            <td>
+              <!-- <input
+                type="text"
+                class="form-control form-control-sm"
+                name="note"
+                value="<%- roles[prop].note %>"
+              /> -->
+              <textarea name="note" id="" cols="30"><%- roles[prop].note %></textarea>
+            </td>
+            <td class="align-middle">
+              <form
+                method="POST"
+                action="/dashboard/roles/update/<%- roles[prop].id %>"
+              >
+                <button type="submit" class="btn btn-primary btn-sm btn-update">
+                  更新
+                </button>
+
+                <button class="btn btn-outline-primary btn-sm btn-edit">
+                  <!-- 編輯 -->
+                </button>
+
+                <input
+                  hidden
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="name"
+                  value="<%- roles[prop].name %>"
+                />
+                <input
+                  hidden
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="note"
+                  value="<%- roles[prop].note %>"
+                />
+              </form>
+            </td>
+            <td class="align-middle">
+              <form
+                method="POST"
+                action="/dashboard/roles/delete/<%- roles[prop].id %>"
+              >
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                  刪除
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <form method="POST" action="/dashboard/roles/create">
+        <table class="table">
+          <tr>
+            <td class="align-middle">新增</td>
+            <td>
+              <label for="name">角色名稱</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                placeholder="請輸入角色名稱"
+              />
+            </td>
+            <td colspan="2">
+              <label for="note">註解</label>
+              <input
+                type="text"
+                class="form-control"
+                id="note"
+                name="note"
+                placeholder="請輸入角色註解"
+              />
+            </td>
+          </tr>
+        </table>
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">新增資訊</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* input 無法編輯 */
+  /* https://stackoverflow.com/questions/11180177/can-one-disable-an-input-field-by-pure-css */
+  tr.disabled input, tr.disabled textarea  {
+    pointer-events: none;
+    border: 1px solid grey;
+    background-color: lightgrey;
+  }
+
+  /* 編輯按鈕 */
+  tr.disabled .btn-edit:before {
+    content: '編輯';
+  }
+  tr:not(.disabled) .btn-edit:before {
+    content: '取消';
+  }
+
+  /* 更新只有在沒有 disabled 時才會出現 */
+  tr.disabled .btn-update {
+    /* display: none; */
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  const categoriesTable = document.querySelector('#categoriesTable')
+
+  categoriesTable.addEventListener('click', (e) => {
+    // 編輯狀態切換
+    if (e.target.classList.contains('btn-edit')) {
+      e.preventDefault()
+      const tr = e.target.parentNode.parentNode.parentNode
+      console.log('id', tr.dataset.id)
+
+      // 從反灰色變白色
+      if (tr.classList.contains('disabled')) {
+        tr.dataset.name = tr.querySelector('input[name="name"]').value
+        tr.dataset.note = tr.querySelector('textarea[name="note"]').value
+        // e.target.textContent = '取消'
+      }
+      // 從白色變反灰
+      if (!tr.classList.contains('disabled')) {
+        tr.querySelector('input[name="name"]').value = tr.dataset.name
+        tr.querySelector('textarea[name="note"]').value = tr.dataset.note
+        // e.target.textContent = '編輯'
+      }
+      tr.classList.toggle('disabled')
+    }
+
+    // 更新
+    if (e.target.classList.contains('btn-update')) {
+      const tr = e.target.parentNode.parentNode.parentNode
+      const td = e.target.parentNode.parentNode
+      console.log('id', tr.dataset.id)
+
+      tr.classList.toggle('disabled')
+      const name = tr.querySelector('input[name="name"]').value
+      const note = tr.querySelector('textarea[name="note"]').value
+      const id = tr.dataset.id
+
+      const nameInput = td.querySelector('input[name="name"]')
+      const noteInput = td.querySelector('input[name="note"]')
+      nameInput.value = name
+      noteInput.value = note
+    }
+  })
+</script>
