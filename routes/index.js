@@ -7,6 +7,7 @@ const convertPagination = require('../modules/convertPagination')
 
 const categoriesRef = firebaseAdminDb.ref('categories')
 const articlesRef = firebaseAdminDb.ref('articles')
+const usersRef = firebaseAdminDb.ref('users')
 
 /* GET home page. */
 // guest
@@ -82,11 +83,16 @@ router.get('/post/:id', async function (req, res, next) {
   articleSnapshot = await articlesRef.child(id).once('value')
   article = articleSnapshot.val()
   console.log('article read_count after', article.read_count)
+  
+  const usersSnapshot = await usersRef.once('value')
+  const users = usersSnapshot.val()
+  console.log('users', users)
 
   res.render('post', {
     title: 'Express',
     categories,
     article,
+    users,
     moment,
     stringtags,
   })

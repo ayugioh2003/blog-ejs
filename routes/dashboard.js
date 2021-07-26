@@ -77,6 +77,7 @@ router.post('/article/create', function (req, res, next) {
   data.id = key
   data.update_time = updateTime
   data.read_count = 0
+  data.author_id = req.session.uid
   console.log('data', data)
 
   articleRef.set(data).then(function () {
