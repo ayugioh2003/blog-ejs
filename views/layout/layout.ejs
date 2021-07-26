@@ -1,4 +1,4 @@
-<% if (!moduleType) { var moduleType = '' } %> 
+<% if (!moduleType) { var moduleType = '' } %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +8,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>六角部落格 | Bootstrap 4 繁體中文手冊</title>
+    <title>麥部落格</title>
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -41,7 +41,7 @@
   >
     <a class="navbar-brand" href="/">
       <i class="fa fa-diamond" aria-hidden="true"></i>
-      六角部落格
+      麥部落格
     </a>
     <button
       class="navbar-toggler"
@@ -56,10 +56,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav ml-auto">
-        <a class="nav-item nav-link <% if (moduleType === 'categoryModule') { %>active<% } %>" 
+        <a
+          class="nav-item nav-link <% if (moduleType === 'categoryModule') { %>active<% } %>"
           href="/categories"
           >分類 <span class="sr-only">(current)</span></a
         >
+        <a class="nav-item nav-link" href="/auth/signin">登入</a>
       </div>
     </div>
   </nav>
@@ -69,7 +71,7 @@
   <footer class="bg-light text-muted py-5">
     <div class="container">
       <ul class="list-unstyled d-flex justify-content-between">
-        <li class="">© Copright 2017 六角部落格</li>
+        <li class="">© Copright <%= new Date().getFullYear() %> 麥部落格</li>
         <li class="ml-auto">
           <a class="text-info mr-1" href="#"
             ><i class="fa fa-instagram" aria-hidden="true"></i
