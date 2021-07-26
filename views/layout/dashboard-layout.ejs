@@ -101,7 +101,7 @@
         const loginfoElement = document.querySelector('.loginfo')
         if (['admin', 'editor'].includes(response.role)) {
           loginfoElement.innerHTML = `
-            <span class="text-white">${response.role}</span>
+            <a class="text-white" href="/dashboard/currentUser">${response.role}</a>
             <a class="nav-link" href="/auth/signout">登出</a>
           `
         } else {

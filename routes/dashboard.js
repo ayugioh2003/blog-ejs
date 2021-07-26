@@ -48,7 +48,7 @@ router.get('/archives', function (req, res, next) {
         stringtags,
         moment,
         status,
-        role: req.session.role
+        role: req.session.role,
       })
     })
 })
@@ -137,7 +137,7 @@ router.get('/categories', function (req, res, next) {
       messages,
       hasInfo: messages?.length > 0,
       categories,
-      role: req.session.role
+      role: req.session.role,
     })
   })
 })
@@ -192,10 +192,16 @@ router.post('/categories/update/:id', async function (req, res) {
   console.log('pathSnapshot', pathSnapshot.val())
   console.log('nameSnapshot', nameSnapshot.val())
 
-  if (pathSnapshot.val() !== null && Object.keys(pathSnapshot.val()).indexOf(id) === -1) {
+  if (
+    pathSnapshot.val() !== null &&
+    Object.keys(pathSnapshot.val()).indexOf(id) === -1
+  ) {
     req.flash('info', '已有相同路徑')
     res.redirect('/dashboard/categories')
-  } else if (nameSnapshot.val() !== null && Object.keys(nameSnapshot.val()).indexOf(id) === -1) {
+  } else if (
+    nameSnapshot.val() !== null &&
+    Object.keys(nameSnapshot.val()).indexOf(id) === -1
+  ) {
     req.flash('info', '已有相同分類名稱')
     res.redirect('/dashboard/categories')
   } else {
@@ -217,7 +223,6 @@ router.post('/categories/delete/:id', function (req, res) {
   req.flash('info', '欄位已刪除')
   res.redirect('/dashboard/categories')
 })
-
 
 // user
 router.get('/users', async function (req, res, next) {
@@ -241,11 +246,11 @@ router.get('/users', async function (req, res, next) {
       messages,
       hasInfo: messages?.length > 0,
       users,
-      roles
+      roles,
     })
   })
 })
-
+// 未做
 router.post('/users/create', async function (req, res) {
   const data = req.body
   // console.log('categories create data', data)
@@ -290,7 +295,10 @@ router.post('/users/update/:id', async function (req, res) {
     .once('value')
   console.log('display_nameSnapshot', display_nameSnapshot.val())
 
-  if (display_nameSnapshot.val() !== null && Object.keys(display_nameSnapshot.val()).indexOf(id) === -1) {
+  if (
+    display_nameSnapshot.val() !== null &&
+    Object.keys(display_nameSnapshot.val()).indexOf(id) === -1
+  ) {
     req.flash('info', '已有相同名稱')
     res.redirect('/dashboard/users')
   } else {
@@ -303,7 +311,7 @@ router.post('/users/update/:id', async function (req, res) {
       })
   }
 })
-
+// 未做
 router.post('/users/delete/:id', function (req, res) {
   // const id = req.param('id')
   const id = req.params.id
@@ -311,6 +319,64 @@ router.post('/users/delete/:id', function (req, res) {
   usersRef.child(id).remove()
   req.flash('info', '欄位已刪除')
   res.redirect('/dashboard/users')
+})
+
+router.get('/currentUser', async function (req, res, next) {
+  const messages = req.flash('info')
+  console.log('messages', messages)
+
+  // firebase 提供的查詢方法
+  // const users = await firebaseAdmin.auth().listUsers()
+  // console.log('users', users)
+
+  const rolesSnapshot = await rolesRef.once('value')
+  const roles = rolesSnapshot.val()
+  // console.log('roles', roles)
+
+  usersRef.once('value').then(function (snapshot) {
+    let users = snapshot.val()
+    users = {
+      [req.session.uid]: users[req.session.uid],
+    }
+    // console.log('users', users)
+    // console.log('categories', categories)
+    res.render('dashboard/currentUser', {
+      title: 'Express',
+      messages,
+      hasInfo: messages?.length > 0,
+      users,
+      roles,
+    })
+  })
+})
+router.post('/currentuser/update/:id', async function (req, res) {
+  const data = req.body
+  const id = req.params.id
+  // const display_name = data.display_name
+  // const note = data.note
+  console.log('data', data)
+
+  const display_nameSnapshot = await usersRef
+    .orderByChild('display_name')
+    .equalTo(data.display_name)
+    .once('value')
+  console.log('display_nameSnapshot', display_nameSnapshot.val())
+
+  if (
+    display_nameSnapshot.val() !== null &&
+    Object.keys(display_nameSnapshot.val()).indexOf(id) === -1
+  ) {
+    req.flash('info', '已有相同名稱')
+    res.redirect('/dashboard/currentUser')
+  } else {
+    usersRef
+      .child(id)
+      .update(data)
+      .then(function () {
+        req.flash('info', '更新用戶資訊成功')
+        res.redirect(`/dashboard/currentUser`)
+      })
+  }
 })
 
 // roles
@@ -369,7 +435,10 @@ router.post('/roles/update/:id', async function (req, res) {
 
   console.log('nameSnapshot', nameSnapshot.val())
 
-  if (nameSnapshot.val() !== null && Object.keys(nameSnapshot.val()).indexOf(id) === -1) {
+  if (
+    nameSnapshot.val() !== null &&
+    Object.keys(nameSnapshot.val()).indexOf(id) === -1
+  ) {
     req.flash('info', '已有相同角色名稱')
     res.redirect('/dashboard/roles')
   } else {
