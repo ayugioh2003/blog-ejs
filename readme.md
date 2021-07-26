@@ -36,5 +36,7 @@
 ## 初次設定
 
 1. 將 .env.example 修改為 .env，並將 Firebase 資料填入
+  - firebase client 端的資訊 (專案總覽 -> 齒輪 -> 一般設定 -> 新增應用程式)
+  - firebase admin 端的資訊 (專案設定 -> 服務帳戶 -> Firebase Admin SDK -> 貼上 SDK)
 3. 執行 npm install
 4. 執行 npm start
