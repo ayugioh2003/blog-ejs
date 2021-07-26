@@ -6,17 +6,13 @@
 
 ## 功能
 
-![image](https://user-images.githubusercontent.com/5466631/126979364-c5db9d22-52c6-493b-a51d-e45f0b62a64d.png)
-
-
 前台
 
 - 全文章列表、文章內頁
 - 全分類列表、同分類文章列表
 - 留言板
-
-![image](https://user-images.githubusercontent.com/5466631/126979610-dff9a319-63c6-441f-8448-e32ba500eeb0.png)
-
+- 
+![image](https://user-images.githubusercontent.com/5466631/126979364-c5db9d22-52c6-493b-a51d-e45f0b62a64d.png)
 
 後台
 
@@ -25,6 +21,9 @@
 - 用戶資料管理
 - 分類管理
 - 文章管理
+
+![image](https://user-images.githubusercontent.com/5466631/126979610-dff9a319-63c6-441f-8448-e32ba500eeb0.png)
+
 
 ## 技術
 
