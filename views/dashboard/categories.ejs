@@ -75,7 +75,9 @@
                 method="POST"
                 action="/dashboard/categories/delete/<%- categories[prop].id %>"
               >
-                <button type="submit" class="btn btn-outline-danger btn-sm">
+                <button 
+                  type="submit" 
+                  class="btn btn-outline-danger btn-sm <% if (role !== 'admin') { %> d-none <% } %>">
                   刪除
                 </button>
               </form>

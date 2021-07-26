@@ -113,6 +113,7 @@ router.post('/signin', async function (req, res) {
 router.get('/signout', (req, res) => {
   req.session.uid = ''
   req.session.email = ''
+  req.session.role = 'guest',
   res.redirect('/auth/signin')
 })
 

@@ -57,16 +57,24 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-item nav-link <% if (moduleType === 'articleModule') { %> active <% } %>" href="/dashboard/archives"
+          <a
+            class="nav-item nav-link <% if (moduleType === 'articleModule') { %> active <% } %>"
+            href="/dashboard/archives"
             >文章管理
           </a>
-          <a class="nav-item nav-link <% if (moduleType === 'categoryModule') { %> active <% } %>" href="/dashboard/categories"
+          <a
+            class="nav-item nav-link <% if (moduleType === 'categoryModule') { %> active <% } %>"
+            href="/dashboard/categories"
             >分類管理
           </a>
-          <a class="nav-item nav-link <% if (moduleType === 'userModule') { %> active <% } %>" href="/dashboard/users"
+          <a
+            class="nav-item nav-link <% if (moduleType === 'userModule') { %> active <% } %>"
+            href="/dashboard/users"
             >用戶管理
           </a>
-          <a class="nav-item nav-link <% if (moduleType === 'roleModule') { %> active <% } %>" href="/dashboard/roles"
+          <a
+            class="nav-item nav-link <% if (moduleType === 'roleModule') { %> active <% } %>"
+            href="/dashboard/roles"
             >角色管理
           </a>
         </div>
@@ -82,11 +90,14 @@
   </body>
   <script>
     $(document).ready(function () {
+      // 取得登入者的資料
       $.ajax({
         url: '/auth/userinfo',
         method: 'get',
       }).done(function (response) {
         console.log(response)
+
+        // 右方登入者名稱
         const loginfoElement = document.querySelector('.loginfo')
         if (['admin', 'editor'].includes(response.role)) {
           loginfoElement.innerHTML = `
@@ -94,8 +105,17 @@
             <a class="nav-link" href="/auth/signout">登出</a>
           `
         } else {
-          loginfoElement.innerHTML = '<a class="nav-link" href="/auth/signin">登入</a>'
+          loginfoElement.innerHTML =
+            '<a class="nav-link" href="/auth/signin">登入</a>'
         }
+
+        // 登入者不是 admin 時，不能顯示的區塊
+        if (!['admin'].includes(response.role)) {
+          const adminPaths = ['/dashboard/users', '/dashboard/roles']
+          adminPaths.forEach(function (path) {
+            $(`[href="${path}"]`).hide()
+          })
+        } 
       })
     })
   </script>

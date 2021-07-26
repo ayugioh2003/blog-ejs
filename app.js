@@ -37,9 +37,21 @@ app.use(flash())
 
 const authCheck = async function (req, res, next) {
   console.log('middleware', req.session)
+  console.log('url', req.originalUrl)
 
-  const whiteRoles = ['admin', 'editor']
-  const isLogable = whiteRoles.indexOf(req.session.role) !== -1
+  const whiteRoles = ['editor']
+  const adminRoutes = ['/dashboard/users', '/dashboard/roles']
+  const isAdmin = req.session.role === 'admin'
+  
+  const isAdminRoute = adminRoutes.indexOf(req.originalUrl) !== -1
+  const isWhiteRole = whiteRoles.indexOf(req.session.role) !== -1
+  const isOtherRolesLogable = isWhiteRole && !isAdminRoute
+
+  console.log('isAdmin', isAdmin)
+  console.log('isAdminRoute', isAdminRoute)
+  console.log('isOtherRolesLogable', isOtherRolesLogable)
+
+  const isLogable = isAdmin || isOtherRolesLogable
   console.log('isLogable', isLogable)
 
   if (isLogable) {

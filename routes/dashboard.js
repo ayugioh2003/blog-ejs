@@ -48,6 +48,7 @@ router.get('/archives', function (req, res, next) {
         stringtags,
         moment,
         status,
+        role: req.session.role
       })
     })
 })
@@ -136,6 +137,7 @@ router.get('/categories', function (req, res, next) {
       messages,
       hasInfo: messages?.length > 0,
       categories,
+      role: req.session.role
     })
   })
 })

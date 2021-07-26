@@ -100,16 +100,16 @@
                 >
               </form>
             </td>
-            <td class="align-middle">
+            <!-- <td class="align-middle">
               <form
                 method="POST"
-                action="/dashboard/users/delete/<%- users[prop].uid %>"
+                action="/dashboard/users/delete/<%# users[prop].uid %>"
               >
                 <button type="submit" class="btn btn-outline-danger btn-sm">
                   刪除
                 </button>
               </form>
-            </td>
+            </td> -->
           </tr>
           <% } %>
         </tbody>
@@ -227,33 +227,6 @@
 
       console.log('name input', tr.querySelector('input[name="display_name"]'))
       console.log('display_nameInput', display_nameInput)
-
-      // const action = tr.classList.contains('disabled') ? 'delete' : 'update'
-      //   const action = 'update'
-      //   console.log(action, id, name, path)
-
-      //   fetch(`/dashboard/categories/${action}/${id}`, {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({
-      //       name,
-      //       path,
-      //     }),
-      //   })
-      //     .then((response) => {
-      //       console.log('response', response)
-      //       if (response.status === 200) {
-      //         console.log('success')
-      //         window.location.reload()
-      //       } else {
-      //         console.log('fail')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
     }
   })
 </script>
