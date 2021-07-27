@@ -1,6 +1,6 @@
 # 麥部落格
 
-一個用 node.js + express + ejs +  完成的 blog 系統
+一個用 node.js + express + ejs + firebase realtime database 完成的 blog 系統
 
 - [麥部落格](https://morning-taiga-19005.herokuapp.com/?page=2)
 
