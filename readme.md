@@ -42,3 +42,14 @@
     - firebase admin 端的資訊 (專案設定 -> 服務帳戶 -> Firebase Admin SDK -> 貼上 SDK)
 2. 執行 npm install
 3. 執行 npm start
+
+## 參考密碼
+
+管理者帳密
+admin@gmail.com
+password
+
+編輯者aaa帳密 (無法進入角色管理、用戶管理。無法刪除文章、分類)
+a@gmail.com
+aaaaaaaa
+
